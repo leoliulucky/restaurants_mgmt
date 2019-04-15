@@ -9,7 +9,9 @@ import com.benxiaopao.sysadmin.menu.service.MenuService;
 import com.benxiaopao.sysadmin.user.vo.SysUserVo;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -20,6 +22,9 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContextUtils;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -28,6 +33,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 权限处理<br />
@@ -121,7 +127,7 @@ public class AuthorizeAspect extends BaseService {
         }
 
         Object proccedResult = proceedingJoinPoint.proceed();
-        handleVisibleMenus(proceedingJoinPoint, request);
+        handleVisibleMenus(proceedingJoinPoint, proccedResult);
         return proccedResult;
     }
 
@@ -182,10 +188,10 @@ public class AuthorizeAspect extends BaseService {
     /**
      * 处理可见菜单<br />私有方法
      * @param proceedingJoinPoint
-     * @param request
+     * @param proccedResult
      * @throws Exception
      */
-    private void handleVisibleMenus(ProceedingJoinPoint proceedingJoinPoint, HttpServletRequest request) throws Exception {
+    private void handleVisibleMenus(ProceedingJoinPoint proceedingJoinPoint, Object proccedResult) throws Exception {
         //当前登录用户
         SysUserVo user = (SysUserVo) currentUser();
         if(user == null){
@@ -197,14 +203,19 @@ public class AuthorizeAspect extends BaseService {
         Method targetMethod = methodSignature.getMethod();
         boolean isAjaxRequest = targetMethod.isAnnotationPresent(ResponseBody.class);
         if(!isAjaxRequest){
-            ViewResult vr = (ViewResult) request.getAttribute("result");
-            if(vr == null){
+            ViewResult vr = null;
+            Class<?> clazz = targetMethod.getReturnType();
+            if(clazz.getName().equals("org.springframework.web.servlet.ModelAndView")){
+                ModelAndView mav = ThreadContent.getData("mav");
+                vr = (ViewResult) mav.getModelMap().get("result");
+            }else{
                 vr = ViewResult.newInstance()
                         .code(1).msg("获取用户可见菜单列表成功");
-                request.setAttribute("result", vr);
+                ThreadContent.request().setAttribute("result", vr);
             }
             List<Menu> menuList = menuService.listVisibleMenu();
             vr.put("menus", menuList);
         }
     }
+
 }

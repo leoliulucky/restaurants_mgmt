@@ -205,4 +205,99 @@ public class MenuService extends BaseService {
         }
         return menuMap;
     }
+
+    /**
+     * 获取所有菜单列表
+     * @return List<Menu> 菜单列表
+     */
+    public List<Menu> listAllMenu() throws Exception {
+        //查询所有菜单列表
+        List<Menu> menus = this.listMenuByWhere(null);
+        return menus;
+    }
+
+    /**
+     * 新增菜单
+     * @param menu 要插入的菜单数据对象
+     */
+    public void insertMenu(Menu menu) throws Exception {
+        //清除缓存
+//        String key = String.format("%s:MenuServiceImpl:listVisibleMenuByRoleId:*", JedisUtil.getInstance().getKeyPrefix());
+//        JedisUtil.getInstance().delBatch(key);
+//        key = String.format("%s:MenuServiceImpl:listRoleMenuPurviewByWhere:*:0", JedisUtil.getInstance().getKeyPrefix());
+//        JedisUtil.getInstance().delBatch(key);
+
+        //新增菜单
+        log.info("#新增菜单，其中 menuName=" + menu.getMenuName());
+        int records = menuMapper.insertSelective(menu);
+        Preconditions.checkArgument(records > 0, "新增菜单失败");
+    }
+
+    /**
+     * 修改菜单
+     * @param menu 要更新的菜单数据对象
+     */
+    public void updateMenu(Menu menu) throws Exception {
+        //清除缓存
+//        String key = String.format("%s:MenuServiceImpl:getMenuById:%d", JedisUtil.getInstance().getKeyPrefix(), menu.getMenuId());
+//        JedisUtil.getInstance().del(key);
+//        key = String.format("%s:MenuServiceImpl:listVisibleMenuByRoleId:*", JedisUtil.getInstance().getKeyPrefix());
+//        JedisUtil.getInstance().delBatch(key);
+
+        //更新菜单
+        log.info("#更新菜单，其中menuId=" + menu.getMenuId() + " menuName=" + menu.getMenuName());
+        int records = menuMapper.updateByPrimaryKeySelective(menu);
+        Preconditions.checkArgument(records > 0, "修改菜单失败");
+    }
+
+    /**
+     * 删除菜单
+     * @param menuId 菜单id
+     */
+    public void deleteMenu(int menuId) throws Exception {
+        //检验是否包含有子菜单
+        MenuExample example = new MenuExample();
+        example.createCriteria().andParentIdEqualTo(menuId);
+        if(menuMapper.countByExample(example) > 0){
+            throw new IllegalAccessException("要删除的菜单包含有子菜单，不允许删除！");
+        }
+
+        //检验是否包含有相关菜单已授权
+        RoleMenuPurviewExample examplePurview = new RoleMenuPurviewExample();
+        examplePurview.createCriteria().andMenuIdEqualTo(menuId);
+        if(roleMenuPurviewMapper.countByExample(examplePurview) > 0){
+            throw new IllegalAccessException("要删除的菜单已授权角色，不允许删除！");
+        }
+
+        //清除缓存
+//        String key = String.format("%s:MenuServiceImpl:getMenuById:%d", JedisUtil.getInstance().getKeyPrefix(), menuId);
+//        JedisUtil.getInstance().del(key);
+//        key = String.format("%s:MenuServiceImpl:listVisibleMenuByRoleId:*", JedisUtil.getInstance().getKeyPrefix());
+//        JedisUtil.getInstance().delBatch(key);
+//        key = String.format("%s:MenuServiceImpl:listRoleMenuPurviewByWhere:*:%d", JedisUtil.getInstance().getKeyPrefix(), menuId);
+//        JedisUtil.getInstance().delBatch(key);
+
+        //删除菜单
+        log.info("#删除菜单，其中menuId=" + menuId);
+        int records = menuMapper.deleteByPrimaryKey(menuId);
+        Preconditions.checkArgument(records > 0, "删除菜单失败");
+    }
+
+    /**
+     * 根据角色id获取菜单权限列表
+     * @param roleId 角色id
+     * @return Map<String, Integer> 菜单id键值对
+     */
+    public Map<String, Integer> listMenuPurviewByRoleId(int roleId) throws Exception {
+        //查询菜单权限列表
+        RoleMenuPurviewKey roleMenuPurviewKey = new RoleMenuPurviewKey();
+        roleMenuPurviewKey.setRoleId(roleId);
+        List<RoleMenuPurviewKey> rmpkList = this.listRoleMenuPurviewByWhere(roleMenuPurviewKey);
+
+        Map<String, Integer> menuIds = new HashMap<String, Integer>();
+        for(RoleMenuPurviewKey item : rmpkList){
+            menuIds.put(String.valueOf(item.getMenuId()), item.getMenuId());
+        }
+        return menuIds;
+    }
 }

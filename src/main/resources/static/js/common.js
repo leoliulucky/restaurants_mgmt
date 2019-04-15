@@ -34,6 +34,7 @@ function _$ajaxResultExecute(data){if(data == null){alert("返回来的数据为
  */
 var _$ajaxDefaultOption = {
     cache:false,
+    dataType: 'json',
     error: function(xhr, errSta, errThr) {
         alert('服务器或网络异常，请稍后执行此操作！');
     },
@@ -44,3 +45,43 @@ var _$ajaxDefaultOption = {
         //showLoading();
     }
 };
+
+/**
+ * 弹出浮框方法
+ * 示例 {content:"您有新消息了", type:"warning", position:"toast-top-center", milliSecond:2000, fun:function(){alert('ok')}}
+ * @param content
+ * @param type 提示方式，值有：
+            info
+            success
+            warning
+            error
+ * @param position
+            toast-top-left  顶端左边
+            toast-top-right    顶端右边
+            toast-top-center  顶端中间
+            toast-top-full-width 顶端，宽度铺满整个屏幕
+            toast-botton-right
+            toast-bottom-left
+            toast-bottom-center
+            toast-bottom-full-width
+ * @param milliSecond 表示过多少毫秒自动关闭浮框，小于0表示不自动关闭
+ * @param fun 表示过多少毫秒后要执行的操作
+ */
+function floatTips(obj){
+    if(obj && obj.position){
+        toastr.options.positionClass = obj.position;
+    }else{
+        toastr.options.positionClass = "toast-top-center";
+    }
+    if(obj && obj.type){
+        toastr[obj.type](obj.content);
+    }else{
+        toastr["success"](obj.content);
+    }
+
+    if(obj && obj.milliSecond > 0){
+        setTimeout(function(){obj.fun&&obj.fun();}, obj.milliSecond);
+    }else{
+        setTimeout(function(){obj&&obj.fun&&obj.fun();}, 2000);
+    }
+}

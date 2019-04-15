@@ -11,4 +11,13 @@
 <!-- Core plugin JavaScript-->
 <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
 
+<link href="/toastr/toastr.min.css" rel="stylesheet" />
+<script src="/toastr/toastr.min.js"></script>
+
 <script src="/js/common.js"></script>
+
+<#if result??>
+    <#assign code = result.code>
+    <#assign msg = result.msg>
+    <#assign data = result.data>
+</#if>

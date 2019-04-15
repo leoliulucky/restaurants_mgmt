@@ -8,16 +8,12 @@
 <meta name="author" content="">
 <title>管理中心|修改密码</title>
 <#include "../../inc/inc.ftl">
-<link href="/toastr/toastr.min.css" rel="stylesheet" />
-<script src="/toastr/toastr.min.js"></script>
 <script type="text/javascript">
 
     /**
      * 页面加载后执行
      */
     $(function(){
-        toastr.options.positionClass = 'toast-top-center';
-
         //当前密码检验
         $("#currentPwd").on("blur", validateCurrentPwd);
         //新密码检验
@@ -107,10 +103,12 @@
                 }
 
                 //提示修改成功
-                toastr.success('密码修改成功！');
-                setTimeout(function(){
-                    window.location.href = "/sysadmin/user/index";
-                }, 2000);
+                floatTips({
+                    content: "密码修改成功！",
+                    fun: function () {
+                        window.location.href = "/sysadmin/user/index";
+                    }
+                });
             }
         });//End...$.ajax
     }
@@ -134,7 +132,7 @@
                 <div class="card mb-3">
                     <div class="card-header">
                         修改密码
-                        <a href="/sysadmin/user/index"><span style="float: right"><i class="fa fa-share"></i>返回</span></a>
+                        <a href="/sysadmin/user/index"><span class="float-right"><i class="fa fa-share"></i>返回</span></a>
                     </div>
                     <div class="card-body">
 

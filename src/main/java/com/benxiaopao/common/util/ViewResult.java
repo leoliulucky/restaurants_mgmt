@@ -167,7 +167,8 @@ public class ViewResult {
 	
 	/**
 	 * 设置结果扩展数据
-	 * @param msg 结果代码
+	 * @param key
+	 * * @param value
 	 * @return
 	 */
 	public ViewResult put(String key, Object value) {
@@ -195,6 +196,7 @@ public class ViewResult {
 			mav = new ModelAndView(pageName);
 		}
 		this.mav.addObject("result", this);
+		ThreadContent.addData("mav", mav);
 		return mav;
 	}
 	
