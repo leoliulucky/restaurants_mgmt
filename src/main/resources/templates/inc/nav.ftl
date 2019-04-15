@@ -1,4 +1,4 @@
-<ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+    <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
 <#--<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
     <a class="nav-link" href="index.html">
         <i class="fa fa-fw fa-dashboard"></i>
@@ -27,7 +27,7 @@
                     <i class="fa fa-fw fa-sitemap"></i>
                     <span class="nav-link-text">${menu.menuName}</span>
                 </a>
-                <ul class="sidenav-second-level collapse" id="menu${menu.menuId}">
+                <ul class="sidenav-second-level collapse show" id="menu${menu.menuId}">
 
                     <#--再次遍历展示子菜单-->
                     <#list result.data.menus as subMenu>

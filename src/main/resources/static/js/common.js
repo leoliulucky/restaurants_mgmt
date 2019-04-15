@@ -1,3 +1,9 @@
+$(function(){
+    $('body').toggleClass('fixed-nav');
+    //$('nav').toggleClass('fixed-top static-top');
+    $('#mainNav').toggleClass('fixed-top static-top');
+});
+
 /**
  * 封装jquery的ajax操作。 进行通用错误处理
  * @author liupoyang
@@ -81,6 +87,8 @@ function floatTips(obj){
 
     if(obj && obj.milliSecond > 0){
         setTimeout(function(){obj.fun&&obj.fun();}, obj.milliSecond);
+    }else if(obj && obj.milliSecond < 0){
+        obj.fun&&obj.fun();
     }else{
         setTimeout(function(){obj&&obj.fun&&obj.fun();}, 2000);
     }

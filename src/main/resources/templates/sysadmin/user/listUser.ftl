@@ -9,36 +9,47 @@
 <title>管理中心 - 成员列表</title>
 <#include "../../inc/inc.ftl">
 <script type="text/javascript">
+
+var _userId;
+
 /**
  * 移除成员
  * @param userId 用户id
  */
 function removeUser(userId){
-    openConfirmWin("移除成员", "你确定要删除该用户成员吗？", function(){
-        //检验数据
-        if(userId == null || userId == ''){
-            alert("参数有误，请检查并重新操作");
-            return false;
-        }
+    _userId = userId;
+}
 
-        //异步请求 删除成员
-        $ajax({
-            type: 'POST',
-            url: environment.basePath + "/sysadmin/user/delete.do",
-            data: {"userId": userId},
-            success: function(data) {
-                //错误等信息提示
-                if(data.code < 0){
-                    openTipWin("移除成员", data.msg);
-                    return false;
-                }
+/**
+ * 移除成员
+ */
+function doRemove(){
+    //检验数据
+    if(_userId == null || _userId == ''){
+        alert("参数有误，请检查并重新操作");
+        return false;
+    }
 
-                openTipWin("移除成员", data.msg, function(){
-                    window.location.href = environment.basePath + "/sysadmin/user/list.do";
-                });
+    //异步请求 删除成员
+    $ajax({
+        type: 'POST',
+        url: "/sysadmin/user/delete",
+        data: {"userId": _userId},
+        success: function(data) {
+            //错误等信息提示
+            if(data.code < 0){
+                alert(data.msg);
+                return false;
             }
-        });//End...$ajax
-    });
+
+            floatTips({
+                content: data.msg,
+                fun: function () {
+                    window.location.href = "/sysadmin/user/list";
+                }
+            });
+        }
+    });//End...$ajax
 }
 </script>
 </head>
@@ -121,8 +132,8 @@ function removeUser(userId){
                                             <td>
                                                 <#-- 自己及其以上角色不允许修改 -->
                                                 <#if userVO.allowOperate>
-                                                    <a href="/sysadmin/user/update.do?userId=${userVO.userId}" title="修改"><i class="fa fa-fw fa-edit"></i></a>
-                                                    <a href="javascript:;" onclick="return removeUser(${userVO.userId});" title="删除"><i class="fa fa-fw fa-remove"></i></a>
+                                                    <a href="/sysadmin/user/update?userId=${userVO.userId}" title="修改"><i class="fa fa-fw fa-edit"></i></a>
+                                                    <a href="javascript:;" data-toggle="modal" data-target="#confirmModal" onclick="return removeUser(${userVO.userId});" title="删除"><i class="fa fa-fw fa-remove"></i></a>
                                                 <#else>
                                                     &nbsp;
                                                 </#if>
@@ -144,5 +155,25 @@ function removeUser(userId){
 
 <#include "../../inc/footer.ftl">
 </div>
+
+<!-- Comfirm Modal-->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">移除成员</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">你确定要删除该用户成员吗？</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+                <a class="btn btn-primary" href="javascript:;" onclick="return doRemove();">确定</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

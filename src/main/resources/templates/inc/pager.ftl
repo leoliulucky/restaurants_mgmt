@@ -13,7 +13,7 @@
 <#assign linkSize = 8>
 
 <div class="col-sm-12 col-md-5 float-left">
-    <div style="color: #6c757d;">
+    <div class="text-muted">
         共 ${pageCount} 页 ${totalCount} 条记录&nbsp;&nbsp;
         每页
         <select name="dataTable_length" class="form-control form-control-sm custom-select col-2">
@@ -52,7 +52,7 @@
         <#-- 开始---页码列表显示 -->
 
         <#-- 多于分页连接页码数 -->
-        <#if pageCount > linkSize>
+        <#if pageCount gt linkSize>
             <#-- 当前页在第4页之前 -->
             <#if curPageNum <= 4>
                 <#list 1..4 as item>
