@@ -93,3 +93,74 @@ function floatTips(obj){
         setTimeout(function(){obj&&obj.fun&&obj.fun();}, 2000);
     }
 }
+
+/**
+ * 信息弹出提示窗体方法
+ * @param title
+ * @param content
+ */
+function alertTips(title, content){
+    doOpenWin(title, content);
+}
+
+/**
+ * 确认弹出提示窗体方法
+ * @param title
+ * @param content
+ * @param fun
+ */
+function confirmTips(title, content, fun){
+    doOpenWin(title, content, fun, "confirm");
+}
+
+/**
+ * 确认弹出提示窗体方法
+ * @param title
+ * @param content
+ * @param fun
+ */
+function doOpenWin(title, content, fun, type){
+    var $tipWin = $("#benxiaopao_confirmModal");
+    if($tipWin.length == 0){
+        var _popupHtml =
+            '<div class="modal fade" id="benxiaopao_confirmModal" tabindex="-1" role="dialog" aria-labelledby="benxiaopao_confirmModalLabel" aria-hidden="true">' +
+            '    <div class="modal-dialog" role="document">' +
+            '        <div class="modal-content">' +
+            '            <div class="modal-header">' +
+            '                <h5 class="modal-title" id="benxiaopao_confirmModalLabel">' + title + '</h5>' +
+            '                <button class="close" type="button" data-dismiss="modal" aria-label="Close">' +
+            '                    <span aria-hidden="true">×</span>' +
+            '                </button>' +
+            '            </div>' +
+            '            <div class="modal-body" id="benxiaopao_confirmModalContent">' + content + '</div>' +
+            '            <div class="modal-footer">';
+
+        if(type == "confirm"){
+            _popupHtml += '                <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>';
+        }
+
+        _popupHtml +=
+            '                <a class="btn btn-primary" href="javascript:;">确定</a>' +
+            '            </div>' +
+            '        </div>' +
+            '    </div>' +
+            '</div>';
+
+        $(document.body).append(_popupHtml);
+        $tipWin = $("#benxiaopao_confirmModal");
+        //绑定按钮事件
+        $tipWin.find("a.btn-primary").unbind("click").on("click", function(){
+            $tipWin.modal('hide');
+            fun&&fun();
+        });
+    }else{
+        $("#benxiaopao_confirmModalLabel").html(title);
+        $("#benxiaopao_confirmModalContent").html(content);
+        //绑定按钮事件
+        $tipWin.find("a.btn-primary").unbind("click").on("click", function(){
+            $tipWin.modal('hide');
+            fun&&fun();
+        });
+    }
+    $tipWin.modal('show');
+}
