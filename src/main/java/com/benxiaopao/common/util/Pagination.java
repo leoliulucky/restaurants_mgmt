@@ -82,7 +82,7 @@ public class Pagination {
 	 */
 	public void setTotalCount(int totalCount) {
 		this.totalCount = totalCount;
-		if(totalCount % pageSize > 0){
+		if(totalCount % pageSize > 0 || totalCount == 0){
 			this.pageCount = (totalCount / pageSize) + 1;
 		}else{
 			this.pageCount = (totalCount / pageSize);

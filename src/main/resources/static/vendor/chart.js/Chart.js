@@ -1847,7 +1847,7 @@ defaults._set('bar', {
 
 	scales: {
 		xAxes: [{
-			type: 'category',
+			type: 'productCategory',
 
 			// Specific to Bar Controller
 			categoryPercentage: 0.8,
@@ -1882,7 +1882,7 @@ defaults._set('horizontalBar', {
 
 		yAxes: [{
 			position: 'left',
-			type: 'category',
+			type: 'productCategory',
 
 			// Specific to Horizontal Bar Controller
 			categoryPercentage: 0.8,
@@ -2756,7 +2756,7 @@ defaults._set('line', {
 
 	scales: {
 		xAxes: [{
-			type: 'category',
+			type: 'productCategory',
 			id: 'x-axis-0'
 		}],
 		yAxes: [{
@@ -3481,7 +3481,7 @@ defaults._set('scatter', {
 	scales: {
 		xAxes: [{
 			id: 'x-axis-1',    // need an ID so datasets can reference the scale
-			type: 'linear',    // scatter should not use a category axis
+			type: 'linear',    // scatter should not use a productCategory axis
 			position: 'bottom'
 		}],
 		yAxes: [{
@@ -3921,7 +3921,7 @@ module.exports = function(Chart) {
 			if (options.scales) {
 				items = items.concat(
 					(options.scales.xAxes || []).map(function(xAxisOptions) {
-						return {options: xAxisOptions, dtype: 'category', dposition: 'bottom'};
+						return {options: xAxisOptions, dtype: 'productCategory', dposition: 'bottom'};
 					}),
 					(options.scales.yAxes || []).map(function(yAxisOptions) {
 						return {options: yAxisOptions, dtype: 'linear', dposition: 'left'};
@@ -5100,7 +5100,7 @@ module.exports = function(Chart) {
 
 					for (i = 0; i < slen; ++i) {
 						scale = source[key][i];
-						type = helpers.valueOrDefault(scale.type, key === 'xAxes' ? 'category' : 'linear');
+						type = helpers.valueOrDefault(scale.type, key === 'xAxes' ? 'productCategory' : 'linear');
 
 						if (i >= target[key].length) {
 							target[key].push({});
@@ -12147,7 +12147,7 @@ module.exports = function(Chart) {
 
 module.exports = function(Chart) {
 
-	// Default config for a category scale
+	// Default config for a productCategory scale
 	var defaultConfig = {
 		position: 'bottom'
 	};
@@ -12273,7 +12273,7 @@ module.exports = function(Chart) {
 		}
 	});
 
-	Chart.scaleService.registerScaleType('category', DatasetScale, defaultConfig);
+	Chart.scaleService.registerScaleType('productCategory', DatasetScale, defaultConfig);
 
 };
 

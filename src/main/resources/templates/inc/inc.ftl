@@ -17,7 +17,15 @@
 <script src="/js/common.js"></script>
 
 <#if result??>
-    <#assign code = result.code>
-    <#assign msg = result.msg>
-    <#assign data = result.data>
+    <#assign code = result.getCode() />
+    <#assign msg = result.getMsg() />
+    <#assign data = result.data />
+    <#-- 业务错误时，页面给出提醒 -->
+    <#if (code < 0)>
+        <script type="text/javascript">
+            $(function () {
+                alertTips("出错了", '${msg}');
+            });
+        </script>
+    </#if>
 </#if>

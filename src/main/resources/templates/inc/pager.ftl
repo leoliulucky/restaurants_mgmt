@@ -6,7 +6,7 @@
 <#assign pageCount = data.pager.pageCount>
 <#-- 当前页码 -->
 <#assign curPageNum = data.pager.pageNum>
-<#if !curPageNum?? || curPageNum <= 0>
+<#if curPageNum?? || curPageNum <= 0>
     <#assign curPageNum = 1>
 </#if>
 <#-- 分页连接页码数 -->
@@ -52,9 +52,9 @@
         <#-- 开始---页码列表显示 -->
 
         <#-- 多于分页连接页码数 -->
-        <#if pageCount gt linkSize>
+        <#if (pageCount > linkSize)>
             <#-- 当前页在第4页之前 -->
-            <#if curPageNum <= 4>
+            <#if (curPageNum <= 4)>
                 <#list 1..4 as item>
                     <#-- 当前页 -->
                     <#if item == curPageNum>
@@ -85,7 +85,7 @@
                     <a class="page-link" href="javascript:;" onclick="return $pager.go(${pageCount});">${pageCount}</a>
                 </li>
             <#-- 当前页在倒数第4页之后 -->
-            <#elseif curPageNum > pageCount-4>
+            <#elseif (curPageNum > pageCount-4)>
                 <li class="page-item">
                     <a class="page-link" href="javascript:;" onclick="return $pager.go(1);">1</a>
                 </li>
