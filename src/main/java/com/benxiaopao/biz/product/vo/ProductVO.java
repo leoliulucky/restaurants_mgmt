@@ -15,7 +15,7 @@ import java.util.Date;
 public class ProductVO {
     private String productId;
     private String productName;
-    private BigDecimal price;
+    private double price;
     private int stock;
     private String description;
     private String icon;

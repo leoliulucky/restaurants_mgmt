@@ -32,7 +32,6 @@ var productManager = function() {
     var _$description;
     var _$icon;
     var _$categoryType;
-    var _$restaurantId;
     var _productId;
 
     var _fnValidateProductName = function(){
@@ -89,16 +88,6 @@ var productManager = function() {
         return true;
     };
 
-    var _fnValidateRestaurantId = function(){
-        if(_$restaurantId.val() == null || _$restaurantId.val().length <= 0){
-            $("#restaurantIdError").show();
-            return false;
-        }
-        $("#restaurantIdError").hide();
-        return true;
-    };
-
-
     return {
         init: function(){
             _$productName = $("#productName");
@@ -107,7 +96,6 @@ var productManager = function() {
             _$description = $("#description");
             _$icon = $("#icon");
             _$categoryType = $("#categoryType");
-            _$restaurantId = $("#restaurantId");
             _productId = $("#productId").val();
 
             _$productName.on("blur", _fnValidateProductName);
@@ -135,9 +123,6 @@ var productManager = function() {
             if(!_fnValidateCategoryType()){
                 return false;
             }
-            if(!_fnValidateRestaurantId()){
-                return false;
-            }
             if(_productId == null || _productId.length <= 0){
                 alertTips("修改菜品", "要修改的菜品不存在");
                 return false;
@@ -153,7 +138,6 @@ var productManager = function() {
                     "description": _$description.val(),
                     "icon": _$icon.val(),
                     "categoryType": _$categoryType.val(),
-                    "restaurantId": _$restaurantId.val(),
                     "productId": _productId
                 },
                 success: function(data) {
@@ -188,7 +172,7 @@ var productManager = function() {
                 <a href="/sysadmin/user/index">管理中心</a>
             </li>
             <li class="breadcrumb-item">
-                <a href="/sysadmin/product/list">菜品列表</a>
+                <a href="/biz/product/list">菜品列表</a>
             </li>
             <li class="breadcrumb-item active">修改菜品信息</li>
         </ol>
@@ -197,13 +181,19 @@ var productManager = function() {
                 <div class="card mb-3">
                     <div class="card-header">
                         修改菜品信息
-                        <a href="/sysadmin/product/list"><span class="float-right"><i class="fa fa-share"></i>返回</span></a>
+                        <a href="/biz/product/list"><span class="float-right"><i class="fa fa-share"></i>返回</span></a>
                     </div>
                     <div class="card-body">
 
                     <#-- content -->
 
                         <form>
+                            <div class="form-group row">
+                                <label for="reNewPwd" class="col-sm-2 col-form-label">餐馆<span class="text-danger">*</span></label>
+                                <div class="col-sm-10">
+                                    <div id="restaurantId">${data.restaurant.restaurantName}</div>
+                                </div>
+                            </div>
                             <div class="form-group row">
                                 <label for="currentPwd" class="col-sm-2 col-form-label">菜品名称<span class="text-danger">*</span></label>
                                 <div class="col-sm-10">
@@ -214,7 +204,7 @@ var productManager = function() {
                             <div class="form-group row">
                                 <label for="newPwd" class="col-sm-2 col-form-label">单价<span class="text-danger">*</span></label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="price" placeholder="单价" value="${data.product.price }">
+                                    <input type="text" class="form-control" id="price" placeholder="单价" value="${data.product.price?string('#.##')}">
                                     <div id="priceError" class="invalid-feedback">请输入单价</div>
                                 </div>
                             </div>
@@ -235,7 +225,9 @@ var productManager = function() {
                             <div class="form-group row">
                                 <label for="reNewPwd" class="col-sm-2 col-form-label">图片<span class="text-danger">*</span></label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="icon" placeholder="图片" value="${data.product.icon }">
+                                    <img src="${data.product.icon}" style="padding-bottom:5px;width: 200px; height: 200px" />
+                                    <br />
+                                    <input type="text" class="form-control" id="icon" placeholder="图片" value="${data.product.icon}">
                                     <div id="iconError" class="invalid-feedback">请输入图片</div>
                                 </div>
                             </div>
@@ -255,24 +247,9 @@ var productManager = function() {
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="reNewPwd" class="col-sm-2 col-form-label">餐馆<span class="text-danger">*</span></label>
-                                <div class="col-sm-10">
-                                    <select class="form-control custom-select" id="roleId">
-                                        <#list data.restaurants as restaurant>
-                                            <#assign selectedStr=''>
-                                                <#if data.product.restaurantId == restaurant.restaurantId>
-                                                    <#assign selectedStr=' selected="selected"'>
-                                                </#if>
-                                            <option value="${restaurant.restaurantId}"${selectedStr}>${restaurant.restaurantName}</option>
-                                        </#list>
-                                    </select>
-                                    <div id="restaurantIdError" class="invalid-feedback">请选择所属餐馆</div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
                                 <div class="col-sm-10">
                                     <#-- 隐藏域 -->
-                                    <input type="hidden" id="userId" value="${data.product.productId}" />
+                                    <input type="hidden" id="productId" value="${data.product.productId}" />
                                     <#-- /隐藏域 -->
                                     <button type="button" class="btn btn-primary" onclick="return productManager.edit();">保存修改</button>&nbsp;&nbsp;
                                     <button type="button" class="btn btn-secondary" onclick="javascript:window.location.href='/biz/product/list';">返回</button>

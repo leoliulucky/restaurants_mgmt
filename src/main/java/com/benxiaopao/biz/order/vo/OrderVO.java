@@ -22,7 +22,7 @@ public class OrderVO {
     private byte orderType;
     private byte orderFrom;
     private String pOrderId;
-    private Integer buyerId;
+    private int buyerId;
     private String consignee;
     private int province;
     private int city;

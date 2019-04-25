@@ -16,7 +16,7 @@ var _productId;
  * 移除菜品
  * @param productId
  */
-function removeCategory(categoryId){
+function removeProduct(productId){
     confirmTips("确认提示", "你确定要删除该菜品吗？", function(){
         _productId = productId;
         doRemove();
@@ -117,16 +117,16 @@ function doRemove(){
                                         <tr>
                                             <td>${vo.productId}</td>
                                             <td>${vo.productName}</td>
-                                            <td>${vo.icon}</td>
-                                            <td>${vo.price}</td>
+                                            <td><img src="${vo.icon}" width="100" height="100" /></td>
+                                            <td>${vo.price?string('#.##')}</td>
                                             <td>${vo.stock}</td>
-                                            <td>${vo.description}</td>
-                                            <td>${vo.categoryType}</
+                                            <td title="${vo.description}"><#if (vo.description?length > 20)>${vo.description?substring(0,20)}...<#else>${vo.description!}</#if></td>
+                                            <td>${vo.categoryType}</td>
                                             <td>${vo.createTime?string('yyyy-MM-dd HH:mm')}</td>
                                             <td>${vo.updateTime?string('yyyy-MM-dd HH:mm')}</td>
                                             <td>
-                                                <a href="/biz/product/update?restaurantId=${vo.productId}" title="修改"><i class="fa fa-fw fa-edit"></i></a>
-                                                <a href="javascript:;" onclick="return removeUser(${vo.productId});" title="删除"><i class="fa fa-fw fa-remove"></i></a>
+                                                <a href="/biz/product/update?productId=${vo.productId}" title="修改"><i class="fa fa-fw fa-edit"></i></a>
+                                                <a href="javascript:;" onclick="return removeProduct('${vo.productId}');" title="删除"><i class="fa fa-fw fa-remove"></i></a>
                                             </td>
                                         </tr>
                                     </#list>
