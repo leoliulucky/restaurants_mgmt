@@ -62,7 +62,7 @@ public class ProductCategoryController extends BaseController {
     public ModelAndView preInsertProductCategory() throws Exception{
         List<RestaurantVO> restaurants = restaurantService.listRestaurantByWhere(null);
         return ViewResult.newInstance()
-                .code(1).msg("进入用户新增页面成功")
+                .code(1).msg("进品类新增页成功")
                 .put("restaurants", restaurants)
                 .view("biz/productCategory/addProductCategory");
     }

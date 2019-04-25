@@ -32,7 +32,6 @@ var productManager = function() {
     var _$description;
     var _$icon;
     var _$categoryType;
-    var _$restaurantId;
 
     var _fnValidateProductName = function(){
         if(_$productName.val() == null || _$productName.val().length <= 0){
@@ -80,23 +79,13 @@ var productManager = function() {
     };
 
     var _fnValidateCategoryType = function(){
-        if(_$categoryType.val() == null || _$categoryType.val().length <= 0){
+        if(_$categoryType.val() == null || _$categoryType.val().length <= 0 || _$categoryType.val() < 0){
             $("#categoryTypeError").show();
             return false;
         }
         $("#categoryTypeError").hide();
         return true;
     };
-
-    var _fnValidateRestaurantId = function(){
-        if(_$restaurantId.val() == null || _$restaurantId.val().length <= 0){
-            $("#restaurantIdError").show();
-            return false;
-        }
-        $("#restaurantIdError").hide();
-        return true;
-    };
-
 
     return {
         init: function(){
@@ -106,7 +95,6 @@ var productManager = function() {
             _$description = $("#description");
             _$icon = $("#icon");
             _$categoryType = $("#categoryType");
-            _$restaurantId = $("#restaurantId");
 
             _$productName.on("blur", _fnValidateProductName);
             _$price.on("blur", _fnValidatePrice);
@@ -137,9 +125,6 @@ var productManager = function() {
             if(!_fnValidateCategoryType()){
                 return false;
             }
-            if(!_fnValidateRestaurantId()){
-                return false;
-            }
 
             $ajax({
                 type: 'POST',
@@ -150,8 +135,7 @@ var productManager = function() {
                     "stock": _$stock.val(),
                     "description": _$description.val(),
                     "icon": _$icon.val(),
-                    "categoryType": _$categoryType.val(),
-                    "restaurantId": _$restaurantId.val()
+                    "categoryType": _$categoryType.val()
                 },
                 success: function(data) {
                     //错误等信息提示
@@ -202,6 +186,12 @@ var productManager = function() {
 
                         <form>
                             <div class="form-group row">
+                                <label for="reNewPwd" class="col-sm-2 col-form-label">餐馆<span class="text-danger">*</span></label>
+                                <div class="col-sm-10">
+                                    <div id="restaurantId">${data.restaurant.restaurantName}</div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="currentPwd" class="col-sm-2 col-form-label">菜品名称<span class="text-danger">*</span></label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="productName" placeholder="菜品名称">
@@ -240,22 +230,12 @@ var productManager = function() {
                                 <label for="reNewPwd" class="col-sm-2 col-form-label">品类<span class="text-danger">*</span></label>
                                 <div class="col-sm-10">
                                     <select class="form-control custom-select" id="categoryType">
+                                        <option value="-1">请选择</option>
                                         <#list data.productCategories as productCategory>
-                                                <option value="${productCategory.categoryType}">${productCategory.categoryName}</option>
+                                            <option value="${productCategory.categoryType}">${productCategory.categoryName}</option>
                                         </#list>
                                     </select>
                                     <div id="categoryTypeError" class="invalid-feedback">请选择所属品类</div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="reNewPwd" class="col-sm-2 col-form-label">餐馆<span class="text-danger">*</span></label>
-                                <div class="col-sm-10">
-                                    <select class="form-control custom-select" id="restaurantId">
-                                        <#list data.restaurants as restaurant>
-                                            <option value="${restaurant.restaurantId}">${restaurant.restaurantName}</option>
-                                        </#list>
-                                    </select>
-                                    <div id="restaurantIdError" class="invalid-feedback">请选择所属餐馆</div>
                                 </div>
                             </div>
                             <div class="form-group row">

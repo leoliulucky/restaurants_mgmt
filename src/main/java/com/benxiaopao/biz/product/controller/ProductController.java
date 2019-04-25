@@ -1,10 +1,17 @@
 package com.benxiaopao.biz.product.controller;
 
+import com.benxiaopao.biz.category.service.ProductCategoryService;
+import com.benxiaopao.biz.category.vo.ProductCategoryVO;
 import com.benxiaopao.biz.product.service.ProductService;
 import com.benxiaopao.biz.product.vo.ProductVO;
+import com.benxiaopao.biz.restaurant.service.RestaurantService;
+import com.benxiaopao.biz.restaurant.vo.RestaurantVO;
 import com.benxiaopao.common.supers.BaseController;
+import com.benxiaopao.common.util.ThreadContent;
 import com.benxiaopao.common.util.ViewResult;
+import com.benxiaopao.provider.dao.model.SysUser;
 import com.benxiaopao.sysadmin.user.constant.UserConstant;
+import com.benxiaopao.sysadmin.user.vo.SysUserVo;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +33,10 @@ import java.util.List;
 public class ProductController extends BaseController {
     @Autowired
     private ProductService productService;
+    @Autowired
+    private ProductCategoryService productCategoryService;
+    @Autowired
+    private RestaurantService restaurantService;
 
     /**
      * 菜品列表页
@@ -56,8 +67,21 @@ public class ProductController extends BaseController {
      * @throws Exception
      */
     @GetMapping("/insert")
-    public String preInsertProduct() throws Exception{
-        return "biz/product/addProduct";
+    public ModelAndView preInsertProduct() throws Exception{
+        SysUserVo user = (SysUserVo) currentUser();
+        //int restaurantId = user.getOrgId();
+        int restaurantId = 1;
+
+        ProductCategoryVO productCategory = new ProductCategoryVO();
+        productCategory.setRestaurantId(restaurantId);
+        List<ProductCategoryVO> productCategories = productCategoryService.listProductCategoryByWhere(productCategory);
+
+        RestaurantVO restaurant = restaurantService.getRestaurantById(restaurantId);
+        return ViewResult.newInstance()
+                .code(1).msg("进菜品新增页成功")
+                .put("productCategories", productCategories)
+                .put("restaurant", restaurant)
+                .view("biz/product/addProduct");
     }
 
     /**
@@ -70,9 +94,14 @@ public class ProductController extends BaseController {
     public String insertProduct(ProductVO product) throws Exception {
         try{
             Preconditions.checkNotNull(product, "菜品数据不能为空");
-//            Preconditions.checkArgument(!Strings.isNullOrEmpty(user.getEmail()), "成员邮箱不能为空");
+            Preconditions.checkArgument(product.getCategoryType() > 0, "品类错误");
 //            Preconditions.checkArgument(!Strings.isNullOrEmpty(user.getPassword()), "密码不能为空");
 //            Preconditions.checkArgument(user.getRoleId() != null && user.getRoleId() > 0, "成员角色数据非法");
+
+            SysUserVo user = (SysUserVo) currentUser();
+            //int restaurantId = user.getOrgId();
+            int restaurantId = 1;
+            product.setRestaurantId(restaurantId);
 
             productService.insertProduct(product);
             return ViewResult.newInstance().code(1).msg("新增菜品成功").json();
@@ -93,9 +122,17 @@ public class ProductController extends BaseController {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(productId), "菜品ID非法");
 
             ProductVO product = productService.getProductById(productId);
+
+            ProductCategoryVO productCategory = new ProductCategoryVO();
+            productCategory.setRestaurantId(product.getRestaurantId());
+            List<ProductCategoryVO> productCategories = productCategoryService.listProductCategoryByWhere(productCategory);
+
+            RestaurantVO restaurant = restaurantService.getRestaurantById(product.getRestaurantId());
             return ViewResult.newInstance()
                     .code(1).msg("进菜品修改页成功")
                     .put("product", product)
+                    .put("productCategories", productCategories)
+                    .put("restaurant", restaurant)
                     .view("biz/product/editProduct");
         } catch (Exception e) {
             log.info("#进菜品修改页出错：" + e.getMessage());
@@ -114,6 +151,7 @@ public class ProductController extends BaseController {
         try{
             Preconditions.checkNotNull(product, "菜品数据不能为空");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(product.getProductId()), "菜品ID非法");
+            Preconditions.checkArgument(product.getCategoryType() > 0, "品类错误");
 //            Preconditions.checkArgument(!Strings.isNullOrEmpty(user.getEmail()), "成员邮箱不能为空");
 //            Preconditions.checkArgument(user.getRoleId() != null && user.getRoleId() > 0, "成员角色数据非法");
 

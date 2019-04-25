@@ -84,7 +84,7 @@ function doRemove(){
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">品类名称</div>
                                         </div>
-                                        <input type="text" class="form-control" name="restaurantName" placeholder="品类名称" value="${data.productCategory.categoryName!}">
+                                        <input type="text" class="form-control" name="categoryName" placeholder="品类名称" value="${data.productCategory.categoryName!}">
                                     </div>
                                 </div>
 
