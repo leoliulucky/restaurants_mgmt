@@ -41,5 +41,6 @@ pagehelper:
 thrift:
   host: localhost
   port: 6666
-#  server:
-#    port: 9999
+
+server:
+  port: 8081

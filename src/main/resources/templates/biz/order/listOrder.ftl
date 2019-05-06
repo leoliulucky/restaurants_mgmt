@@ -8,48 +8,34 @@
 <meta name="author" content="">
 <title>管理中心 - 订单列表</title>
 <#include "../../inc/inc.ftl">
+
 <script type="text/javascript">
-
-var _userId;
-
 /**
- * 移除成员
+ * 关闭订单
  * @param userId 用户id
  */
-function removeUser(userId){
-    _userId = userId;
-}
-
-/**
- * 移除成员
- */
-function doRemove(){
-    //检验数据
-    if(_userId == null || _userId == ''){
-        alert("参数有误，请检查并重新操作");
-        return false;
-    }
-
-    //异步请求 删除成员
-    $ajax({
-        type: 'POST',
-        url: "/sysadmin/user/delete",
-        data: {"userId": _userId},
-        success: function(data) {
-            //错误等信息提示
-            if(data.code < 0){
-                alert(data.msg);
-                return false;
-            }
-
-            floatTips({
-                content: data.msg,
-                fun: function () {
-                    window.location.href = "/sysadmin/user/list";
+function closeOrder(orderId){
+    confirmTips("确认提示"， "你确认要关闭该订单吗？只有待支付的订单才能被关闭，关闭后顾客就不能支付了", function(){
+        $ajax({
+            type: 'POST',
+            url: "/biz/order/close",
+            data: {"orderId": orderId},
+            success: function(data) {
+                //错误等信息提示
+                if(data.code < 0){
+                    alertTips("错误提示"， data.msg);
+                    return false;
                 }
-            });
-        }
-    });//End...$ajax
+
+                floatTips({
+                    content: data.msg,
+                    fun: function () {
+                        window.location.href = "/biz/order/list";
+                    }
+                });
+            }
+        });//End...$ajax
+    });
 }
 </script>
 </head>
@@ -76,7 +62,7 @@ function doRemove(){
 
                     <#-- content -->
 
-                        <form name="searchForm" action="/biz/restaurant/list" method="post">
+                        <form name="searchForm" action="/biz/order/list" method="post">
                             <div class="form-row align-items-center">
                                 <div class="col-auto">
                                     <div class="input-group mb-2">
@@ -101,9 +87,9 @@ function doRemove(){
                                 <thead class="thead-dark">
                                 <tr>
                                     <th>订单ID</th>
-                                    <th>姓名</th>
+                                    <th>顾客</th>
                                     <th>手机号</th>
-                                    <th>地址</th>
+                                    <#--<th>地址</th>-->
                                     <th>金额</th>
                                     <th>订单状态</th>
                                     <th>创建时间</th>
@@ -117,14 +103,15 @@ function doRemove(){
                                             <td>${vo.orderId}</td>
                                             <td>${vo.consignee}</td>
                                             <td>${vo.tel}</td>
-                                            <td>${vo.address}</td>
-                                            <td>${vo.realTotalAmout}</td>
-                                            <td>${vo.orderStatus}</td>
+                                            <#--<td>${vo.address}</td>-->
+                                            <td>${vo.realTotalAmout?string(',##0.00')}</td>
+                                            <td><#if vo.orderStatus == 1>待支付</#if><#if vo.orderStatus == 2>已支付</#if></td>
                                             <td>${vo.createTime?string('yyyy-MM-dd HH:mm')}</td>
                                             <td>${vo.updateTime?string('yyyy-MM-dd HH:mm')}</td>
                                             <td>
-                                                <a href="/biz/restaurant/update?restaurantId=${vo.orderId}" title="修改"><i class="fa fa-fw fa-edit"></i></a>
-                                                <a href="javascript:;" data-toggle="modal" data-target="#confirmModal" onclick="return removeUser(${vo.orderId});" title="删除"><i class="fa fa-fw fa-remove"></i></a>
+                                                <#if vo.orderStatus == 1>
+                                                    <a href="javascript:;" onclick="return closeOrder('${vo.orderId}');" title="关闭订单"><i class="fa fa-fw fa-times-circle-o"></i></a>
+                                                </#if>
                                             </td>
                                         </tr>
                                     </#list>
@@ -144,24 +131,24 @@ function doRemove(){
 <#include "../../inc/footer.ftl">
 </div>
 
-<!-- Comfirm Modal-->
-<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmModalLabel">移除成员</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">你确定要删除该用户成员吗？</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
-                <a class="btn btn-primary" href="javascript:;" onclick="return doRemove();">确定</a>
-            </div>
-        </div>
-    </div>
-</div>
+<#--<!-- Comfirm Modal&ndash;&gt;-->
+<#--<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">-->
+    <#--<div class="modal-dialog" role="document">-->
+        <#--<div class="modal-content">-->
+            <#--<div class="modal-header">-->
+                <#--<h5 class="modal-title" id="confirmModalLabel">移除成员</h5>-->
+                <#--<button class="close" type="button" data-dismiss="modal" aria-label="Close">-->
+                    <#--<span aria-hidden="true">×</span>-->
+                <#--</button>-->
+            <#--</div>-->
+            <#--<div class="modal-body">你确定要删除该用户成员吗？</div>-->
+            <#--<div class="modal-footer">-->
+                <#--<button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>-->
+                <#--<a class="btn btn-primary" href="javascript:;" onclick="return doRemove();">确定</a>-->
+            <#--</div>-->
+        <#--</div>-->
+    <#--</div>-->
+<#--</div>-->
 
 </body>
 </html>

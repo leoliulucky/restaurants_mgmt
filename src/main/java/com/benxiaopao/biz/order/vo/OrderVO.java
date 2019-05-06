@@ -15,12 +15,12 @@ import java.util.Date;
 public class OrderVO {
     private String orderId;
     private int payType;
-    private BigDecimal totalAmout;
-    private BigDecimal realTotalAmout;
-    private BigDecimal shipmentExpense;
-    private short orderStatus;
-    private byte orderType;
-    private byte orderFrom;
+    private double totalAmout;
+    private double realTotalAmout;
+    private double shipmentExpense;
+    private int orderStatus;
+    private int orderType;
+    private int orderFrom;
     private String pOrderId;
     private int buyerId;
     private String consignee;

@@ -7,12 +7,12 @@ import com.benxiaopao.biz.restaurant.vo.RestaurantVO;
 import com.benxiaopao.common.supers.BaseController;
 import com.benxiaopao.common.util.ViewResult;
 import com.benxiaopao.sysadmin.user.constant.UserConstant;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -50,6 +50,25 @@ public class OrderController extends BaseController {
         } catch (Exception e) {
             log.info("#订单列表页出错：" + e.getMessage());
             return ViewResult.newInstance().code(-1).msg(e.getMessage()).view("biz/order/listOrder");
+        }
+    }
+
+    /**
+     * 关闭订单请求<br />异步请求
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/close")
+    @ResponseBody
+    public String closeOrder(String orderId) throws Exception{
+        try{
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(orderId), "订单ID非法");
+
+            orderService.closeOrder(orderId);
+            return ViewResult.newInstance().code(1).msg("关闭订单成功").json();
+        } catch (Exception e) {
+            log.error("#关闭订单出错：", e);
+            return ViewResult.newInstance().code(-1).msg(e.getMessage()).json();
         }
     }
 }

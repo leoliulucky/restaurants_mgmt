@@ -6,6 +6,7 @@ import com.benxiaopao.common.util.Pagination;
 import com.benxiaopao.thrift.ThriftClient;
 import com.benxiaopao.thrift.model.*;
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -79,5 +80,22 @@ public class OrderService extends BaseService {
         }
 
         return result;
+    }
+
+    /**
+     * 关闭订单
+     * @param orderId 订单id
+     */
+    public void closeOrder(String orderId) throws Exception {
+        int records = 0;
+        try {
+            thriftClient.open();
+            records = thriftClient.getThriftService().closeOrderById(orderId);
+        } catch (Exception e) {
+            log.error("# RPC调用失败", e);
+        } finally {
+            thriftClient.close();
+        }
+        Preconditions.checkArgument(records > 0, "关闭订单失败");
     }
 }

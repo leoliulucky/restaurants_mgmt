@@ -120,6 +120,14 @@
             <systemPath>${project.basedir}/lib/restaurants-thrift-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
 
+        <dependency>
+            <groupId>com.benxiaopao</groupId>
+            <artifactId>restaurants-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/restaurants-common-1.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+
     </dependencies>
 
     <build>
