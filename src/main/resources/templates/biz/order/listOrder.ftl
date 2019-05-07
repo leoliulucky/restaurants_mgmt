@@ -8,14 +8,13 @@
 <meta name="author" content="">
 <title>管理中心 - 订单列表</title>
 <#include "../../inc/inc.ftl">
-
 <script type="text/javascript">
 /**
  * 关闭订单
- * @param userId 用户id
+ * @param orderId 订单id
  */
 function closeOrder(orderId){
-    confirmTips("确认提示"， "你确认要关闭该订单吗？只有待支付的订单才能被关闭，关闭后顾客就不能支付了", function(){
+    confirmTips("确认提示", "你确认要关闭该订单吗？只有待支付的订单才能被关闭，关闭后顾客就不能支付了", function(){
         $ajax({
             type: 'POST',
             url: "/biz/order/close",
@@ -23,7 +22,7 @@ function closeOrder(orderId){
             success: function(data) {
                 //错误等信息提示
                 if(data.code < 0){
-                    alertTips("错误提示"， data.msg);
+                    alertTips("错误提示", data.msg);
                     return false;
                 }
 
@@ -105,7 +104,11 @@ function closeOrder(orderId){
                                             <td>${vo.tel}</td>
                                             <#--<td>${vo.address}</td>-->
                                             <td>${vo.realTotalAmout?string(',##0.00')}</td>
-                                            <td><#if vo.orderStatus == 1>待支付</#if><#if vo.orderStatus == 2>已支付</#if></td>
+                                            <td>
+                                                <#if vo.orderStatus == 1>待支付</#if>
+                                                <#if vo.orderStatus == 2>已支付</#if>
+                                                <#if vo.orderStatus == 5>已关闭</#if>
+                                            </td>
                                             <td>${vo.createTime?string('yyyy-MM-dd HH:mm')}</td>
                                             <td>${vo.updateTime?string('yyyy-MM-dd HH:mm')}</td>
                                             <td>
@@ -131,24 +134,60 @@ function closeOrder(orderId){
 <#include "../../inc/footer.ftl">
 </div>
 
-<#--<!-- Comfirm Modal&ndash;&gt;-->
-<#--<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">-->
-    <#--<div class="modal-dialog" role="document">-->
-        <#--<div class="modal-content">-->
-            <#--<div class="modal-header">-->
-                <#--<h5 class="modal-title" id="confirmModalLabel">移除成员</h5>-->
-                <#--<button class="close" type="button" data-dismiss="modal" aria-label="Close">-->
-                    <#--<span aria-hidden="true">×</span>-->
-                <#--</button>-->
-            <#--</div>-->
-            <#--<div class="modal-body">你确定要删除该用户成员吗？</div>-->
-            <#--<div class="modal-footer">-->
-                <#--<button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>-->
-                <#--<a class="btn btn-primary" href="javascript:;" onclick="return doRemove();">确定</a>-->
-            <#--</div>-->
-        <#--</div>-->
-    <#--</div>-->
-<#--</div>-->
+<!-- Comfirm Modal-->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">新订单提醒</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">您有新订单了，请及时处理</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal" onclick="javascript:document.getElementById('notice').pause();">关闭</button>
+                <a class="btn btn-primary" href="/biz/order/list">查看新的订单</a>
+            </div>
+        </div>
+    </div>
+</div>
 
+<#-- 播放音乐 -->
+<audio id="notice" loop="loop">
+    <source src="/voice/song.mp3" type="audio/mpeg" />
+</audio>
+
+<script type="text/javascript">
+var websocket = null;
+if('WebSocket' in window) {
+    websocket = new WebSocket('ws://localhost:8081/webSocket');
+}else {
+    alert('该浏览器不支持websocket!');
+}
+
+websocket.onopen = function (event) {
+    console.log('建立连接');
+}
+
+websocket.onclose = function (event) {
+    console.log('连接关闭');
+}
+
+websocket.onmessage = function (event) {
+    console.log('收到消息:' + event.data)
+    //弹窗提醒, 播放音乐
+    $('#confirmModal').modal('show');
+    document.getElementById('notice').play();
+}
+
+websocket.onerror = function () {
+    alert('websocket通信发生错误！');
+}
+
+window.onbeforeunload = function () {
+    websocket.close();
+}
+</script>
 </body>
 </html>

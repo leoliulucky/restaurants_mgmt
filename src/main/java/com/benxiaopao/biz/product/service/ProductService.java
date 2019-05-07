@@ -1,6 +1,7 @@
 package com.benxiaopao.biz.product.service;
 
 import com.benxiaopao.biz.product.vo.ProductVO;
+import com.benxiaopao.common.component.WebSocket;
 import com.benxiaopao.common.supers.BaseService;
 import com.benxiaopao.common.util.Pagination;
 import com.benxiaopao.thrift.ThriftClient;
@@ -27,6 +28,8 @@ import java.util.List;
 public class ProductService extends BaseService {
     @Autowired
     private ThriftClient thriftClient;
+    @Autowired
+    private WebSocket webSocket;
 
     /**
      * 根据条件获取菜品列表，带分页
@@ -77,6 +80,9 @@ public class ProductService extends BaseService {
         } finally {
             thriftClient.close();
         }
+
+        //发送websocket消息
+        webSocket.sendMessage("xxxxx");
 
         return result;
     }
