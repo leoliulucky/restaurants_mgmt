@@ -3,9 +3,6 @@ package com.benxiaopao.biz.restaurant.service;
 import com.benxiaopao.biz.restaurant.vo.RestaurantVO;
 import com.benxiaopao.common.supers.BaseService;
 import com.benxiaopao.common.util.Pagination;
-import com.benxiaopao.provider.dao.model.Role;
-import com.benxiaopao.provider.dao.model.SysUser;
-import com.benxiaopao.sysadmin.user.constant.UserConstant;
 import com.benxiaopao.sysadmin.user.vo.SysUserVo;
 import com.benxiaopao.thrift.ThriftClient;
 import com.benxiaopao.thrift.model.*;
@@ -17,9 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.DigestUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -46,6 +40,10 @@ public class RestaurantService extends BaseService {
     public List<RestaurantVO> listRestaurantByWherePage(RestaurantVO restaurant, int pageNum, int pageSize) throws Exception {
         if(restaurant == null){
             restaurant = new RestaurantVO();
+        }
+        SysUserVo user = (SysUserVo) currentUser();
+        if(user.getRoleId() != 1){
+            restaurant.setRestaurantId(user.getOrgId());
         }
 
         Pagination pagination = Pagination.currentPagination(pageNum, pageSize);
@@ -210,4 +208,5 @@ public class RestaurantService extends BaseService {
         }
         return restaurant;
     }
+
 }

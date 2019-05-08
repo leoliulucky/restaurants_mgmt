@@ -7,9 +7,7 @@ import com.benxiaopao.biz.product.vo.ProductVO;
 import com.benxiaopao.biz.restaurant.service.RestaurantService;
 import com.benxiaopao.biz.restaurant.vo.RestaurantVO;
 import com.benxiaopao.common.supers.BaseController;
-import com.benxiaopao.common.util.ThreadContent;
 import com.benxiaopao.common.util.ViewResult;
-import com.benxiaopao.provider.dao.model.SysUser;
 import com.benxiaopao.sysadmin.user.constant.UserConstant;
 import com.benxiaopao.sysadmin.user.vo.SysUserVo;
 import com.google.common.base.Preconditions;
@@ -69,8 +67,7 @@ public class ProductController extends BaseController {
     @GetMapping("/insert")
     public ModelAndView preInsertProduct() throws Exception{
         SysUserVo user = (SysUserVo) currentUser();
-        //int restaurantId = user.getOrgId();
-        int restaurantId = 1;
+        int restaurantId = user.getOrgId();
 
         ProductCategoryVO productCategory = new ProductCategoryVO();
         productCategory.setRestaurantId(restaurantId);
@@ -95,13 +92,14 @@ public class ProductController extends BaseController {
         try{
             Preconditions.checkNotNull(product, "菜品数据不能为空");
             Preconditions.checkArgument(product.getCategoryType() > 0, "品类错误");
-//            Preconditions.checkArgument(!Strings.isNullOrEmpty(user.getPassword()), "密码不能为空");
-//            Preconditions.checkArgument(user.getRoleId() != null && user.getRoleId() > 0, "成员角色数据非法");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(product.getProductName()), "名称不能为空");
+            Preconditions.checkArgument(product.getPrice() > 0, "单价数据非法");
+            Preconditions.checkArgument(product.getStock() > 0, "库存数据非法");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(product.getDescription()), "描述不能为空");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(product.getIcon()), "图片不能为空");
 
             SysUserVo user = (SysUserVo) currentUser();
-            //int restaurantId = user.getOrgId();
-            int restaurantId = 1;
-            product.setRestaurantId(restaurantId);
+            product.setRestaurantId(user.getOrgId());
 
             productService.insertProduct(product);
             return ViewResult.newInstance().code(1).msg("新增菜品成功").json();
@@ -152,8 +150,11 @@ public class ProductController extends BaseController {
             Preconditions.checkNotNull(product, "菜品数据不能为空");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(product.getProductId()), "菜品ID非法");
             Preconditions.checkArgument(product.getCategoryType() > 0, "品类错误");
-//            Preconditions.checkArgument(!Strings.isNullOrEmpty(user.getEmail()), "成员邮箱不能为空");
-//            Preconditions.checkArgument(user.getRoleId() != null && user.getRoleId() > 0, "成员角色数据非法");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(product.getProductName()), "名称不能为空");
+            Preconditions.checkArgument(product.getPrice() > 0, "单价数据非法");
+            Preconditions.checkArgument(product.getStock() > 0, "库存数据非法");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(product.getDescription()), "描述不能为空");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(product.getIcon()), "图片不能为空");
 
             productService.updateProduct(product);
             return ViewResult.newInstance().code(1).msg("修改菜品信息成功!").json();

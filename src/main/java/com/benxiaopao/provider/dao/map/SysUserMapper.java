@@ -57,11 +57,11 @@ public interface SysUserMapper {
         "insert into sys_user (userId, email, ",
         "password, realName, ",
         "roleId, createTime, ",
-        "updateTime, status)",
+        "updateTime, status, orgId)",
         "values (#{userId,jdbcType=INTEGER}, #{email,jdbcType=VARCHAR}, ",
         "#{password,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR}, ",
         "#{roleId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, ",
-        "#{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=SMALLINT})"
+        "#{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=SMALLINT}, #{orgId,jdbcType=INTEGER})"
     })
     int insert(SysUser record);
 
@@ -89,7 +89,8 @@ public interface SysUserMapper {
         @Result(column="roleId", property="roleId", jdbcType=JdbcType.INTEGER),
         @Result(column="createTime", property="createTime", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="updateTime", property="updateTime", jdbcType=JdbcType.TIMESTAMP),
-        @Result(column="status", property="status", jdbcType=JdbcType.SMALLINT)
+        @Result(column="status", property="status", jdbcType=JdbcType.SMALLINT),
+        @Result(column="orgId", property="orgId", jdbcType=JdbcType.INTEGER, id=true)
     })
     List<SysUser> selectByExample(SysUserExample example);
 
@@ -101,7 +102,7 @@ public interface SysUserMapper {
      */
     @Select({
         "select",
-        "userId, email, password, realName, roleId, createTime, updateTime, status",
+        "userId, email, password, realName, roleId, createTime, updateTime, status, orgId",
         "from sys_user",
         "where userId = #{userId,jdbcType=INTEGER}"
     })
@@ -113,7 +114,8 @@ public interface SysUserMapper {
         @Result(column="roleId", property="roleId", jdbcType=JdbcType.INTEGER),
         @Result(column="createTime", property="createTime", jdbcType=JdbcType.TIMESTAMP),
         @Result(column="updateTime", property="updateTime", jdbcType=JdbcType.TIMESTAMP),
-        @Result(column="status", property="status", jdbcType=JdbcType.SMALLINT)
+        @Result(column="status", property="status", jdbcType=JdbcType.SMALLINT),
+        @Result(column="orgId", property="orgId", jdbcType=JdbcType.INTEGER, id=true)
     })
     SysUser selectByPrimaryKey(Integer userId);
 
@@ -158,7 +160,8 @@ public interface SysUserMapper {
           "roleId = #{roleId,jdbcType=INTEGER},",
           "createTime = #{createTime,jdbcType=TIMESTAMP},",
           "updateTime = #{updateTime,jdbcType=TIMESTAMP},",
-          "status = #{status,jdbcType=SMALLINT}",
+          "status = #{status,jdbcType=SMALLINT},",
+          "orgId = #{orgId,jdbcType=INTEGER}",
         "where userId = #{userId,jdbcType=INTEGER}"
     })
     int updateByPrimaryKey(SysUser record);

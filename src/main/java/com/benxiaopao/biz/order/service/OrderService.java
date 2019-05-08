@@ -4,6 +4,7 @@ import com.benxiaopao.biz.order.vo.OrderVO;
 import com.benxiaopao.common.component.WebSocket;
 import com.benxiaopao.common.supers.BaseService;
 import com.benxiaopao.common.util.Pagination;
+import com.benxiaopao.sysadmin.user.vo.SysUserVo;
 import com.benxiaopao.thrift.ThriftClient;
 import com.benxiaopao.thrift.model.*;
 import com.google.common.base.Function;
@@ -29,6 +30,8 @@ import java.util.List;
 public class OrderService extends BaseService {
     @Autowired
     private ThriftClient thriftClient;
+    @Autowired
+    private WebSocket webSocket;
 
     /**
      * 根据条件获取订单列表，带分页
@@ -41,6 +44,8 @@ public class OrderService extends BaseService {
         if(order == null){
             order = new OrderVO();
         }
+        SysUserVo user = (SysUserVo) currentUser();
+        order.setRestaurantId(user.getOrgId());
 
         Pagination pagination = Pagination.currentPagination(pageNum, pageSize);
 
@@ -98,5 +103,15 @@ public class OrderService extends BaseService {
             thriftClient.close();
         }
         Preconditions.checkArgument(records > 0, "关闭订单失败");
+    }
+
+    /**
+     * 通知订单
+     * @param orderId 订单id
+     */
+    public void notifyOrder(String orderId) throws Exception {
+        //发送websocket消息
+        webSocket.sendMessage(orderId);
+        log.info("# notifyOrder success! orderId={}", orderId);
     }
 }

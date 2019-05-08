@@ -77,6 +77,10 @@ public class SysUserSqlProvider {
         if (record.getStatus() != null) {
             sql.VALUES("status", "#{status,jdbcType=SMALLINT}");
         }
+
+        if (record.getOrgId() != null) {
+            sql.VALUES("orgId", "#{orgId,jdbcType=INTEGER}");
+        }
         
         return sql.toString();
     }
@@ -101,6 +105,7 @@ public class SysUserSqlProvider {
         sql.SELECT("createTime");
         sql.SELECT("updateTime");
         sql.SELECT("status");
+        sql.SELECT("orgId");
         sql.FROM("sys_user");
         applyWhere(sql, example, false);
         
@@ -155,6 +160,10 @@ public class SysUserSqlProvider {
         if (record.getStatus() != null) {
             sql.SET("status = #{record.status,jdbcType=SMALLINT}");
         }
+
+        if (record.getOrgId() != null) {
+            sql.SET("orgId = #{record.orgId,jdbcType=INTEGER}");
+        }
         
         applyWhere(sql, example, true);
         return sql.toString();
@@ -178,6 +187,7 @@ public class SysUserSqlProvider {
         sql.SET("createTime = #{record.createTime,jdbcType=TIMESTAMP}");
         sql.SET("updateTime = #{record.updateTime,jdbcType=TIMESTAMP}");
         sql.SET("status = #{record.status,jdbcType=SMALLINT}");
+        sql.SET("orgId = #{record.orgId,jdbcType=INTEGER}");
         
         SysUserExample example = (SysUserExample) parameter.get("example");
         applyWhere(sql, example, true);
@@ -220,6 +230,10 @@ public class SysUserSqlProvider {
         
         if (record.getStatus() != null) {
             sql.SET("status = #{status,jdbcType=SMALLINT}");
+        }
+
+        if (record.getOrgId() != null) {
+            sql.SET("orgId = #{orgId,jdbcType=INTEGER}");
         }
         
         sql.WHERE("userId = #{userId,jdbcType=INTEGER}");

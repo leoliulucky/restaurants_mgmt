@@ -51,6 +51,14 @@ var userManager = function() {
      */
     var _role;
     /**
+     * 所属餐馆
+     */
+    var _$restaurantId;
+    /**
+     * 所属餐馆
+     */
+    var _restaurant;
+    /**
      * 用户id
      */
     var _userId;
@@ -120,6 +128,18 @@ var userManager = function() {
         return true;
     };
 
+    /**
+     * 检验所属餐馆
+     */
+    var _fnValidateRestaurant = function(){
+        if(_$restaurantId.val() == null || _$restaurantId.val().length <= 0){
+            $("#restaurantIdError").html("请选择角色权限").show();
+            return false;
+        }
+        _restaurant = _$restaurantId.val();
+        return true;
+    };
+
 
     return {
         /**
@@ -132,15 +152,8 @@ var userManager = function() {
             _$password = $("#password");
             _$rePassword = $("#rePassword");
             _$roleId = $("#roleId");
+            _$restaurantId = $("#restaurantId");
             _userId = $("#userId").val();
-
-            //隐藏提示信息
-            $(".error").hide();
-            //角色权限绑定选择后事件，限制只能单选
-            $(".yCheck").on("click", function(){
-                _$icoRoles.removeClass("checked");
-                $(this).find(".ico").addClass("checked");
-            });
 
             //邮箱检验
             _$email.on("blur", _fnValidateEmail);
@@ -162,6 +175,10 @@ var userManager = function() {
             if(!_fnValidateRole()){
                 return false;
             }
+            //检验餐馆
+            if(!_fnValidateRestaurant()){
+                return false;
+            }
             //检验用户id
             if(_userId == null || _userId.length <= 0){
                 alert("要修改的成员不存在");
@@ -176,6 +193,7 @@ var userManager = function() {
                     "email": _$email.val(),
                     "realName": _$realName.val(),
                     "roleId": _role,
+                    "orgId": _restaurant,
                     "userId": _userId
                 },
                 success: function(data) {
@@ -310,6 +328,21 @@ var userManager = function() {
                                         </#list>
                                     </select>
                                     <div id="roleIdError" class="invalid-feedback">请选择角色权限</div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="reNewPwd" class="col-sm-2 col-form-label">所属餐馆<span class="text-danger">*</span></label>
+                                <div class="col-sm-10">
+                                    <select class="form-control custom-select" id="restaurantId">
+                                        <#list data.restaurants as restaurant>
+                                            <#assign selectedStr=''>
+                                                <#if data.user.orgId == restaurant.restaurantId>
+                                                    <#assign selectedStr=' selected="selected"'>
+                                                </#if>
+                                            <option value="${restaurant.restaurantId}"${selectedStr}>${restaurant.restaurantName}</option>
+                                        </#list>
+                                    </select>
+                                    <div id="restaurantIdError" class="invalid-feedback">请选择所属餐馆</div>
                                 </div>
                             </div>
                             <div class="form-group row">

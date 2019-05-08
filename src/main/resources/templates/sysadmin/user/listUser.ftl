@@ -119,6 +119,7 @@ function doRemove(){
                                     <th>成员姓名</th>
                                     <th>成员角色</th>
                                     <th>加入时间</th>
+                                    <th>所属餐馆</th>
                                     <th>备注</th>
                                 </tr>
                                 </thead>
@@ -129,6 +130,7 @@ function doRemove(){
                                             <td>${userVO.realName}</td>
                                             <td>${userVO.roleName}</td>
                                             <td>${userVO.createTime?string('yyyy-MM-dd HH:mm')} </td>
+                                            <td>${userVO.restaurantName}</td>
                                             <td>
                                                 <#-- 自己及其以上角色不允许修改 -->
                                                 <#if userVO.allowOperate>

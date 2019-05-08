@@ -704,6 +704,66 @@ public class SysUserExample {
             addCriterion("status not between", value1, value2, "status");
             return (Criteria) this;
         }
+
+        public Criteria andOrgIdIsNull() {
+            addCriterion("orgId is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdIsNotNull() {
+            addCriterion("orgId is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdEqualTo(Integer value) {
+            addCriterion("orgId =", value, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdNotEqualTo(Integer value) {
+            addCriterion("orgId <>", value, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdGreaterThan(Integer value) {
+            addCriterion("orgId >", value, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("orgId >=", value, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdLessThan(Integer value) {
+            addCriterion("orgId <", value, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdLessThanOrEqualTo(Integer value) {
+            addCriterion("orgId <=", value, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdIn(List<Integer> values) {
+            addCriterion("orgId in", values, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdNotIn(List<Integer> values) {
+            addCriterion("orgId not in", values, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdBetween(Integer value1, Integer value2) {
+            addCriterion("orgId between", value1, value2, "orgId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrgIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("orgId not between", value1, value2, "orgId");
+            return (Criteria) this;
+        }
     }
 
     /**

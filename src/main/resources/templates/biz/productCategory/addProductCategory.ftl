@@ -153,9 +153,7 @@ var categoryManager = function() {
                                 <label for="reNewPwd" class="col-sm-2 col-form-label">餐馆<span class="text-danger">*</span></label>
                                 <div class="col-sm-10">
                                     <select class="form-control custom-select" id="restaurantId">
-                                        <#list data.restaurants as restaurant>
-                                            <option value="${restaurant.restaurantId}">${restaurant.restaurantName}</option>
-                                        </#list>
+                                        <option value="${data.restaurant.restaurantId}">${data.restaurant.restaurantName}</option>
                                     </select>
                                     <div id="restaurantIdError" class="invalid-feedback">请选择所属餐馆</div>
                                 </div>

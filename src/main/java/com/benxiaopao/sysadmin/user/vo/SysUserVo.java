@@ -17,6 +17,10 @@ public class SysUserVo extends SysUser {
 	 * 用户是否允许操作(修改、删除)
 	 */
 	private boolean allowOperate;
+	/**
+	 * 餐馆名称
+	 */
+	private String restaurantName;
 	
 	/**
 	 * 从父类赋值
@@ -31,6 +35,7 @@ public class SysUserVo extends SysUser {
 		this.setCreateTime(o.getCreateTime());
 		this.setUpdateTime(o.getUpdateTime());
 		this.setStatus(o.getStatus());
+		this.setOrgId(o.getOrgId());
 		return this;
 	}
 
@@ -49,7 +54,12 @@ public class SysUserVo extends SysUser {
 	public void setAllowOperate(boolean allowOperate) {
 		this.allowOperate = allowOperate;
 	}
-	
-	
 
+	public String getRestaurantName() {
+		return restaurantName;
+	}
+
+	public void setRestaurantName(String restaurantName) {
+		this.restaurantName = restaurantName;
+	}
 }

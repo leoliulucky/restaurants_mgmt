@@ -29,6 +29,7 @@ public class OrderVO {
     private int district;
     private String address;
     private String tel;
+    private int restaurantId;
     private Date createTime;
     private Date updateTime;
 }

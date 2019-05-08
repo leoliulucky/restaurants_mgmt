@@ -4,6 +4,7 @@ import com.benxiaopao.biz.order.service.OrderService;
 import com.benxiaopao.biz.order.vo.OrderVO;
 import com.benxiaopao.biz.restaurant.service.RestaurantService;
 import com.benxiaopao.biz.restaurant.vo.RestaurantVO;
+import com.benxiaopao.common.aspect.ExcludeAuthorize;
 import com.benxiaopao.common.supers.BaseController;
 import com.benxiaopao.common.util.ViewResult;
 import com.benxiaopao.sysadmin.user.constant.UserConstant;
@@ -68,6 +69,26 @@ public class OrderController extends BaseController {
             return ViewResult.newInstance().code(1).msg("关闭订单成功").json();
         } catch (Exception e) {
             log.error("#关闭订单出错：", e);
+            return ViewResult.newInstance().code(-1).msg(e.getMessage()).json();
+        }
+    }
+
+    /**
+     * 通知订单请求<br />异步请求
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/notify")
+    @ResponseBody
+    @ExcludeAuthorize
+    public String notifyOrder(String orderId) throws Exception{
+        try{
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(orderId), "订单ID非法");
+
+            orderService.notifyOrder(orderId);
+            return ViewResult.newInstance().code(1).msg("通知订单成功").json();
+        } catch (Exception e) {
+            log.error("#通知订单出错：", e);
             return ViewResult.newInstance().code(-1).msg(e.getMessage()).json();
         }
     }

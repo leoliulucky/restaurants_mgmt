@@ -1,5 +1,7 @@
 package com.benxiaopao.sysadmin.user.controller;
 
+import com.benxiaopao.biz.restaurant.service.RestaurantService;
+import com.benxiaopao.biz.restaurant.vo.RestaurantVO;
 import com.benxiaopao.common.aspect.ExcludeAuthorize;
 import com.benxiaopao.common.supers.BaseController;
 import com.benxiaopao.common.util.DateUtil;
@@ -36,6 +38,8 @@ public class UserController extends BaseController {
     private UserService userService;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private RestaurantService restaurantService;
 
     @GetMapping("/login")
     @ExcludeAuthorize
@@ -100,9 +104,12 @@ public class UserController extends BaseController {
     public ModelAndView preInsertUser() throws Exception{
         //查询角色列表
         List<Role> roles = roleService.listAllRole();
+        //查询餐馆列表
+        List<RestaurantVO> restaurants = restaurantService.listRestaurantByWhere(null);
         return ViewResult.newInstance()
                 .code(1).msg("进入用户新增页面成功")
                 .put("roles", roles)
+                .put("restaurants", restaurants)
                 .view("sysadmin/user/addUser");
     }
 
@@ -149,10 +156,13 @@ public class UserController extends BaseController {
             SysUser user = userService.getUserById(userId);
             //查询角色列表
             List<Role> roles = roleService.listAllRole();
+            //查询餐馆列表
+            List<RestaurantVO> restaurants = restaurantService.listRestaurantByWhere(null);
             return ViewResult.newInstance()
                     .code(1).msg("进入用户修改页面成功")
                     .put("user", user)
                     .put("roles", roles)
+                    .put("restaurants", restaurants)
                     .view("sysadmin/user/editUser");
         } catch (Exception e) {
             log.info("#请求进入用户修改页面时发生业务异常，异常信息为：" + e.getMessage());

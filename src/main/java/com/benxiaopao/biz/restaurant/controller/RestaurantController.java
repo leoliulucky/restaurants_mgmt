@@ -6,6 +6,7 @@ import com.benxiaopao.common.supers.BaseController;
 import com.benxiaopao.common.util.ViewResult;
 import com.benxiaopao.sysadmin.user.constant.UserConstant;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -69,9 +70,11 @@ public class RestaurantController extends BaseController {
     public String insertRestaurant(RestaurantVO restaurant) throws Exception {
         try{
             Preconditions.checkNotNull(restaurant, "餐馆数据不能为空");
-//            Preconditions.checkArgument(!Strings.isNullOrEmpty(user.getEmail()), "成员邮箱不能为空");
-//            Preconditions.checkArgument(!Strings.isNullOrEmpty(user.getPassword()), "密码不能为空");
-//            Preconditions.checkArgument(user.getRoleId() != null && user.getRoleId() > 0, "成员角色数据非法");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(restaurant.getRestaurantName()), "名称不能为空");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(restaurant.getIcon()), "图片不能为空");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(restaurant.getTags()), "标签不能为空");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(restaurant.getAddress()), "地址不能为空");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(restaurant.getTel()), "电话不能为空");
 
             restaurantService.insertRestaurant(restaurant);
             return ViewResult.newInstance().code(1).msg("新增餐馆成功").json();
@@ -113,8 +116,11 @@ public class RestaurantController extends BaseController {
         try{
             Preconditions.checkNotNull(restaurant, "餐馆数据不能为空");
             Preconditions.checkArgument(restaurant.getRestaurantId() > 0, "餐馆ID非法");
-//            Preconditions.checkArgument(!Strings.isNullOrEmpty(user.getEmail()), "成员邮箱不能为空");
-//            Preconditions.checkArgument(user.getRoleId() != null && user.getRoleId() > 0, "成员角色数据非法");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(restaurant.getRestaurantName()), "名称不能为空");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(restaurant.getIcon()), "图片不能为空");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(restaurant.getTags()), "标签不能为空");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(restaurant.getAddress()), "地址不能为空");
+            Preconditions.checkArgument(!Strings.isNullOrEmpty(restaurant.getTel()), "电话不能为空");
 
             restaurantService.updateRestaurant(restaurant);
             return ViewResult.newInstance().code(1).msg("修改餐馆信息成功!").json();

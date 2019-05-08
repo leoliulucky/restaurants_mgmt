@@ -1,10 +1,9 @@
 package com.benxiaopao.biz.category.service;
 
 import com.benxiaopao.biz.category.vo.ProductCategoryVO;
-import com.benxiaopao.biz.product.vo.ProductVO;
-import com.benxiaopao.biz.restaurant.vo.RestaurantVO;
 import com.benxiaopao.common.supers.BaseService;
 import com.benxiaopao.common.util.Pagination;
+import com.benxiaopao.sysadmin.user.vo.SysUserVo;
 import com.benxiaopao.thrift.ThriftClient;
 import com.benxiaopao.thrift.model.*;
 import com.google.common.base.Function;
@@ -42,6 +41,8 @@ public class ProductCategoryService extends BaseService {
         if(productCategory == null){
             productCategory = new ProductCategoryVO();
         }
+        SysUserVo user = (SysUserVo) currentUser();
+        productCategory.setRestaurantId(user.getOrgId());
 
         Pagination pagination = Pagination.currentPagination(pageNum, pageSize);
 
@@ -92,6 +93,8 @@ public class ProductCategoryService extends BaseService {
         if(productCategory == null){
             productCategory = new ProductCategoryVO();
         }
+        SysUserVo user = (SysUserVo) currentUser();
+        productCategory.setRestaurantId(user.getOrgId());
 
         TPListProductCategory tpListProductCategory = new TPListProductCategory();
 

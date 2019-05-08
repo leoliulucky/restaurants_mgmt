@@ -1,5 +1,7 @@
 package com.benxiaopao.sysadmin.user.service;
 
+import com.benxiaopao.biz.restaurant.service.RestaurantService;
+import com.benxiaopao.biz.restaurant.vo.RestaurantVO;
 import com.benxiaopao.common.supers.BaseService;
 import com.benxiaopao.common.util.Pagination;
 import com.benxiaopao.common.util.ThreadContent;
@@ -12,6 +14,7 @@ import com.benxiaopao.sysadmin.role.service.RoleService;
 import com.benxiaopao.sysadmin.user.constant.UserConstant;
 import com.benxiaopao.sysadmin.user.vo.SysUserVo;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户成员业务逻辑服务处理类
@@ -38,6 +42,8 @@ public class UserService extends BaseService {
     private RoleMapper roleMapper;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private RestaurantService restaurantService;
 
     /**
      * 用户登录
@@ -94,6 +100,13 @@ public class UserService extends BaseService {
         //当前登录用户
         SysUserVo userSession = (SysUserVo) currentUser();
 
+        //查询餐馆列表
+        List<RestaurantVO> restaurants = restaurantService.listRestaurantByWhere(null);
+        Map<Integer, String> restaurantNameMap = Maps.newHashMap();
+        for(RestaurantVO restaurant : restaurants){
+            restaurantNameMap.put(restaurant.getRestaurantId(), restaurant.getRestaurantName());
+        }
+
         //遍历用户列表，以转换相应属性呈现到前端
         List<SysUserVo> result = new ArrayList<SysUserVo>();
         Role role = null;
@@ -104,6 +117,7 @@ public class UserService extends BaseService {
             vo = new SysUserVo();
             vo.copy(item).setRoleName(role == null ? "" : role.getRoleName());
             vo.setAllowOperate(!userSession.getUserId().equals(item.getUserId()));
+            vo.setRestaurantName(restaurantNameMap.get(item.getOrgId()) == null ? "" : restaurantNameMap.get(item.getOrgId()));
             result.add(vo);
         }
         return result;
